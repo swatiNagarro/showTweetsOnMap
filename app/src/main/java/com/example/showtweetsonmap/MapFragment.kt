@@ -10,10 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -59,14 +56,11 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         super.onViewCreated(view, savedInstanceState)
         navController = Navigation.findNavController(view)
-
         tweetsViewModel = ViewModelProvider(this).get(TweetsViewModelNew::class.java)
 
         binding.btnSearch.setOnClickListener {
-
             startObservingTweets()
             tweetsViewModel.startStreaming(
                 binding.searchEditText.text.toString()
@@ -81,24 +75,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
 
     private fun startObservingTweets() {
-        tweetsViewModel.tweets.observe(this, {
+        tweetsViewModel.tweets.observe(viewLifecycleOwner, {
             Log.e("test", "coming inside start obseving" + it.size)
         })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        val sydney = LatLng(-33.852, 151.211)
-        val melbourne = LatLng(-37.8136, 144.9631)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.addMarker(MarkerOptions().position(melbourne).title("Marker in Melbourne"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
         location?.let {
             val currentLoc = LatLng(it.latitude, it!!.longitude)
-            mMap.addMarker(MarkerOptions().position(currentLoc).title("Marker in Melbourne"))
+            mMap.addMarker(MarkerOptions().position(currentLoc).title("Current location"))
             mMap.moveCamera(CameraUpdateFactory.newLatLng(currentLoc))
         }
-
         googleMap.setOnInfoWindowClickListener { marker ->
             navController.navigate(R.id.move_to_tweet_detail_fragment)
         }

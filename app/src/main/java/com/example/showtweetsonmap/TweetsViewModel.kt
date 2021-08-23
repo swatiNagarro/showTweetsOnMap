@@ -4,7 +4,6 @@ import android.app.Application
 import android.content.Context
 import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import twitter4j.*
 import twitter4j.conf.ConfigurationBuilder
@@ -26,47 +25,40 @@ class TweetsViewModelNew(application: Application) : AndroidViewModel(applicatio
     fun startStreaming(
         searchTerm: String
     ) {
-       // if (tweets == null) {
-           // tweets = MutableLiveData<List<Status>>()
-            val listener: StatusListener = object : StatusListener {
-                override fun onException(ex: Exception?) {
-                    Log.e(TAG, "An exception occurred while getting tweets stream$ex")
-                }
+        val listener: StatusListener = object : StatusListener {
+            override fun onException(ex: Exception?) {
+                Log.e(TAG, "An exception occurred while getting tweets stream$ex")
+            }
 
-                override fun onStatus(status: Status) {
-                    Log.e(TAG, "Tweets data received " + status.user)
-                    tempStatusList.add(status)
-                    if(tempStatusList.size < 100){
-                     //   twitterStream.shutdown()
-
-                        tweets?.let{
-                            it.postValue(tempStatusList)
-                        }
+            override fun onStatus(status: Status) {
+                Log.e(TAG, "Tweets data received " + status.user)
+                tempStatusList.add(status)
+                if (tempStatusList.size < 100) {
+                    tweets?.let {
+                        it.postValue(tempStatusList)
                     }
-                }
-
-                override fun onDeletionNotice(statusDeletionNotice: StatusDeletionNotice?) {
-                }
-
-                override fun onTrackLimitationNotice(numberOfLimitedStatuses: Int) {
-                }
-
-                override fun onScrubGeo(userId: Long, upToStatusId: Long) {
-                }
-
-                override fun onStallWarning(warning: StallWarning?) {
                 }
             }
 
+            override fun onDeletionNotice(statusDeletionNotice: StatusDeletionNotice?) {
+            }
 
-            var keywords = arrayOf(searchTerm)
-            tweetFilterQuery.track(*keywords);
-            twitterStream.addListener(listener);
+            override fun onTrackLimitationNotice(numberOfLimitedStatuses: Int) {
+            }
 
-            //twitterStream.filter(tweetFilterQuery);
-            twitterStream.sample()
-      //  }
-     //   return tweets
+            override fun onScrubGeo(userId: Long, upToStatusId: Long) {
+            }
+
+            override fun onStallWarning(warning: StallWarning?) {
+            }
+        }
+
+
+        var keywords = arrayOf(searchTerm)
+        tweetFilterQuery.track(*keywords);
+        twitterStream.addListener(listener);
+        twitterStream.filter(tweetFilterQuery);
+
     }
 
     private fun getTwitterStream(context: Context): TwitterStream {
