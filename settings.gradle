@@ -1,0 +1,2 @@
+rootProject.name = "ShowTweetsOnMap"
+include ':app'
