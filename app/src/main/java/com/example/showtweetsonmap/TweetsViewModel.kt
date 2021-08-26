@@ -7,13 +7,11 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import twitter4j.*
 import twitter4j.conf.ConfigurationBuilder
-import java.util.*
-import java.util.List
 
 
 class TweetsViewModelNew(application: Application) : AndroidViewModel(application) {
 
-    var tweets: MutableLiveData<List<Status>> = MutableLiveData()
+    var tweets: MutableLiveData<ArrayList<Status>> = MutableLiveData()
     val tempStatusList: ArrayList<Status> = ArrayList()
     private val tweetFilterQuery = FilterQuery()
     private val twitterStream: TwitterStream
@@ -77,10 +75,3 @@ class TweetsViewModelNew(application: Application) : AndroidViewModel(applicatio
     }
 }
 
-private fun <T> MutableLiveData<T>?.postValue(arrayList: T) {
-
-}
-
-private fun <T> MutableLiveData<T>.postValue(tempStatusList: ArrayList<Status>) {
-
-}
